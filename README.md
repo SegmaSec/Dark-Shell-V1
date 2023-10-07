@@ -1,4 +1,4 @@
-# Dark-Shell
+# Dark-Shell: V1
 ---
 <p align="center">
 <img src="logo.png" alt="center" style="width:600px; height:200px"/>
