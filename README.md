@@ -11,6 +11,7 @@
   ```sh
   git clone https://github.com/0xPwn1/Dark-Shell
   cd Dark-Shell
+  # Before Run 'install.sh' You Should be upldate Python3 and Pip 
   chmod +x install.sh && ./install.sh
 ```
 
