@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from colorit import *
 init_colorit()
 
