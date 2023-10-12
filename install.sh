@@ -3,6 +3,6 @@
 pip3 install -r requirements.txt
 sudo mv Dark-Shell.py /usr/local/bin/Dark-Shell
 sudo chmod +x /usr/local/bin/Dark-Shell
-sudo rm -rf *
+sudo rm -rf ../Dark-Shell
 
 echo "Please Restart Your Terminal!!!"
