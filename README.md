@@ -26,11 +26,13 @@
     | |__| | (_| | |  |   <       ____) | | | |  __/ | |
     |_____/ \__,_|_|  |_|\_\     |_____/|_| |_|\___|_|_|     
 
-Drink Coffe, Enjoy Generate Shell                  by 0xPwn1                                                                                                 
+Drink Coffe, Enjoy Generate Shell                  by 0xPwn1-V1.2                                                                                               
 
-[~] Enter Your IP: 10.10.10.10
-[~] Enter Your PORT: 4444
-[~] Enter Name File (Without Extension): Shell
+Enter IP or Name-Interface: tun0
+==> Incorrect Interface!!!
+Enter IP or Name-Interface: wlan0
+[~] Enter Your PORT: 1234
+[~] Enter Name File (Without Extension): shell
   ~) - Bash          ~) - Mfikto
   ~) - Perl          ~) - Perl-No-Sh
   ~) - Php           ~) - Rustcat
@@ -40,15 +42,8 @@ Drink Coffe, Enjoy Generate Shell                  by 0xPwn1
   ~) - Awk           ~) - Nodejs
 
 
-Choose Your Language: Php
-  ~) - php            ~) - php1  ~) - php2
-  ~) - php3           ~) - php4  ~) - php5
-  ~) - php6           ~) - php7  ~) - php8
-  ~) - php9           ~) - phtml ~) - phar
-
-
-What PHP Version are you using: php
-The modified file has been saved as Shell.php
+Choose Your Language: Bash
+The modified file has been saved as shell.sh
 ```
 
 ## 📜 Credits :
