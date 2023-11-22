@@ -28,9 +28,9 @@
 
 Drink Coffe, Enjoy Generate Shell                  by 0xPwn1-V1.2                                                                                               
 
-Enter IP or Name-Interface: tun0
+[~] Enter IP or Name-Interface: tun0
 ==> Incorrect Interface!!!
-Enter IP or Name-Interface: wlan0
+[~] Enter IP or Name-Interface: wlan0
 [~] Enter Your PORT: 1234
 [~] Enter Name File (Without Extension): shell
   ~) - Bash          ~) - Mfikto
